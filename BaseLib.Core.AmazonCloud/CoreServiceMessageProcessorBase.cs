@@ -28,9 +28,10 @@ namespace BaseLib.Core.AmazonCloud
             {
                 await Task.WhenAll(processingTasks.Values);
             }
-            catch
+            catch (Exception ex)
             {
-                // Intentionally swallowing exceptions to allow batch failure handling below.
+                // Added logging for better visibility of errors during message processing in Lambda.
+                context.Logger.LogLine($"Error processing messages: {ex}");
             }
 
             var batchItemFailures = processingTasks

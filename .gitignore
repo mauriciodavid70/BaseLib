@@ -368,3 +368,6 @@ Demo/
 
 # macOS system files
 **/.DS_Store
+
+
+**/copilot-instructions.md
