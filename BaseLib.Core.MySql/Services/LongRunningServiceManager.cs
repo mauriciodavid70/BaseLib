@@ -155,7 +155,7 @@ namespace BaseLib.Core.Services.MySql
             // when all children are finished invoke resume on parent service
             if (batchSummary.Completed >= batchRecord.ChildrenCount)
             {
-                var typeName = $"{coreEvent.ServiceName}, {coreEvent.ModuleName}";
+                var typeName = coreEvent.TypeName!;
                 await invoker.ResumeAsync(typeName, coreEvent.OperationId!, coreEvent.CorrelationId);
             }
 
