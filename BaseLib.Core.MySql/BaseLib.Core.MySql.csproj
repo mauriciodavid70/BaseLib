@@ -4,7 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>BaseLib.Core.MySql</PackageId>
-    <Version>3.1.0</Version>
+    <Version>3.1.1</Version>
     <Authors>Mauricio David Obando</Authors>
     <Company>Mauricio David Obando</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

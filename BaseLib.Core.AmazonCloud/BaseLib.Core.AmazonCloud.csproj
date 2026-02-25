@@ -4,7 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>BaseLib.Core.AmazonCloud</PackageId>
-    <Version>3.1.2-alpha-004</Version>
+    <Version>3.1.2</Version>
     <Authors>Mauricio David Obando</Authors>
     <Company>Mauricio David Obando</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
