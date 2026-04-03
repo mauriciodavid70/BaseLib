@@ -24,11 +24,13 @@ namespace BaseLib.Core.Services.AmazonCloud
             this.folderName = folderName;
         }
 
+        /// <inheritdoc/>
         public Task<CoreStatusEvent> ReadAsync(string correlationId)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc/>
         public async Task<int> WriteAsync(CoreStatusEvent statusEvent)
         {
             var keyName = $"{folderName}/{statusEvent.OperationId}.json";

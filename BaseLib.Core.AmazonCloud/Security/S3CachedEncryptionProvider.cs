@@ -19,6 +19,11 @@ namespace BaseLib.Core.Security.AmazonCloud
         private readonly string bucketName;
         private readonly string folderName;
         
+        /// <summary>Initializes the caching provider.</summary>
+        /// <param name="innerProvider">Underlying provider used to generate or unwrap keys when the cache misses.</param>
+        /// <param name="s3">S3 client used to read and write wrapped key files.</param>
+        /// <param name="bucketName">S3 bucket where wrapped key files are stored.</param>
+        /// <param name="folderName">S3 key prefix for key files. Defaults to <c>cache/keys</c>.</param>
         public S3CachedEncryptionProvider(IEncryptionKeyProvider innerProvider, IAmazonS3 s3, string bucketName, string folderName = "cache/keys")
         {
             this.innerProvider = innerProvider;
@@ -27,6 +32,7 @@ namespace BaseLib.Core.Security.AmazonCloud
             this.folderName = folderName;
         }
 
+        /// <inheritdoc/>
         public async Task<(byte[] key, byte[] wrappedKey)> GetEncryptionKeyAsync()
         {
             if (keyPair == null)
@@ -92,6 +98,7 @@ namespace BaseLib.Core.Security.AmazonCloud
             return objectKey;
         }
 
+        /// <inheritdoc/>
         public Task<byte[]> UnwrapKeyAsync(byte[] wrappedKey)
         {
             if (keyPair != null && keyPair.WrappedKey==wrappedKey)

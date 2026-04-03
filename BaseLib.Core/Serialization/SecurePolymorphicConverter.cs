@@ -21,11 +21,13 @@ namespace BaseLib.Core.Serialization
             this.keyProvider = keyProvider;
         }
 
+        /// <inheritdoc/>
         public override bool CanConvert(Type typeToConvert)
         {
             return typeof(T).IsAssignableFrom(typeToConvert);
         }
 
+        /// <inheritdoc/>
         public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             //check start of the object
@@ -101,6 +103,7 @@ namespace BaseLib.Core.Serialization
 
         }
 
+        /// <inheritdoc/>
         public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
         {
             var type = value.GetType();

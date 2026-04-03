@@ -5,8 +5,15 @@ using BaseLib.Core.Serialization;
 
 namespace BaseLib.Core.Services
 {
+    /// <summary>Extension methods for <see cref="ICoreServiceRunner"/>.</summary>
     public static class CoreServicesExtensions
     {
+        /// <summary>
+        /// Deserializes a JSON message body and dispatches it to the appropriate <c>RunAsync</c> or
+        /// <c>ResumeAsync</c> method on the runner.
+        /// </summary>
+        /// <param name="runner">The runner that resolves and executes services.</param>
+        /// <param name="messageBody">JSON-encoded payload produced by <see cref="ICoreServiceFireOnly"/>.</param>
         [Obsolete("Derive processor from  CoreServiceMessageProcessorBase instead")]
         public static async Task RunAsync(this ICoreServiceRunner runner, string messageBody)
         {

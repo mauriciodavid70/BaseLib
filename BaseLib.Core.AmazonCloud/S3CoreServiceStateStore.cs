@@ -34,6 +34,7 @@ namespace BaseLib.Core.Services.AmazonCloud
             this.folderName = folderName;
         }
 
+        /// <inheritdoc/>
         public async Task<IDictionary<string, object?>> ReadAsync(string operationId)
         {
             // Fast path for invalid inputs
@@ -66,6 +67,7 @@ namespace BaseLib.Core.Services.AmazonCloud
             );
         }
 
+        /// <inheritdoc/>
         public async Task WriteAsync(string operationId, IDictionary<string, object?> state)
         {
             // Create a dictionary with typed values

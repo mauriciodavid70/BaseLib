@@ -152,6 +152,13 @@ namespace BaseLib.Core.Services.AmazonCloud
 
         }
 
+        /// <summary>
+        /// Dispatches multiple service invocations by type name to the SQS FIFO queue in concurrent batches.
+        /// </summary>
+        /// <param name="typeName">Assembly-qualified type name of the target service.</param>
+        /// <param name="requests">Collection of request payloads, one per child service invocation.</param>
+        /// <param name="correlationId">Correlation ID written into each message envelope.</param>
+        /// <param name="isLongRunningChild">Set to <see langword="true"/> when the invocations are children of a long-running parent.</param>
         public async Task FireManyAsync(string typeName, IEnumerable<CoreRequestBase> requests, string? correlationId = null, bool isLongRunningChild = false)
         {
             await InitializeAsync();

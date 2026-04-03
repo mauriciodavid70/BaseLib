@@ -18,6 +18,7 @@ namespace BaseLib.Core.Services
             this.eventStore = eventStore;
         }
 
+        /// <inheritdoc/>
         public async Task<int> HandleAsync(CoreStatusEvent statusEvent)
         {
             if (statusEvent.Status == CoreServiceStatus.Finished)
