@@ -3,6 +3,7 @@ using BaseLib.Core.Models;
 
 namespace BaseLib.Core.Extensions
 {
+    /// <summary>Extension methods for <see cref="CoreReasonCode"/>.</summary>
     public static class CoreReasonCodeExtensions
     {
         /// <summary>

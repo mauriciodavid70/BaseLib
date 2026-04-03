@@ -14,6 +14,9 @@ namespace BaseLib.Core.Services.AmazonCloud
         private readonly string bucketName;
         private readonly string folderName;
 
+        /// <param name="s3">S3 client.</param>
+        /// <param name="bucketName">Bucket where event JSON files are stored.</param>
+        /// <param name="folderName">S3 key prefix. Defaults to <c>events</c>.</param>
         public CoreStatusEventsStore(IAmazonS3 s3, string bucketName, string folderName = "events")
         {
             this.s3 = s3;
@@ -21,11 +24,13 @@ namespace BaseLib.Core.Services.AmazonCloud
             this.folderName = folderName;
         }
 
+        /// <inheritdoc/>
         public Task<CoreStatusEvent> ReadAsync(string correlationId)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc/>
         public async Task<int> WriteAsync(CoreStatusEvent statusEvent)
         {
             var keyName = $"{folderName}/{statusEvent.OperationId}.json";

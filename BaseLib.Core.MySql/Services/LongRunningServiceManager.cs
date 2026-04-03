@@ -7,6 +7,11 @@ using MySql.Data.MySqlClient;
 namespace BaseLib.Core.Services.MySql
 {
 
+    /// <summary>
+    /// MySQL-backed implementation of <see cref="ICoreLongRunningServiceManager"/> that persists
+    /// long-running batch control records in the <c>LONG_RUNNING_BATCH</c> table and triggers
+    /// <see cref="ICoreServiceFireOnly.ResumeAsync"/> when all child services have completed.
+    /// </summary>
     public class LongRunningServiceManager : ICoreLongRunningServiceManager
     {
         private readonly Func<MySqlConnection> connectionFactory;
@@ -115,6 +120,9 @@ namespace BaseLib.Core.Services.MySql
                 OPERATION_ID = @OPERATION_ID
         ";
 
+        /// <summary>Initializes the manager.</summary>
+        /// <param name="connectionFactory">Factory that creates and opens a <see cref="MySqlConnection"/> on demand.</param>
+        /// <param name="invoker">Fire-only dispatcher used to resume parent services when all children finish.</param>
         public LongRunningServiceManager(Func<MySqlConnection> connectionFactory, ICoreServiceFireOnly invoker)
         {
             this.connectionFactory = connectionFactory;
@@ -161,11 +169,13 @@ namespace BaseLib.Core.Services.MySql
 
         }
 
+        /// <inheritdoc/>
         public async Task HandleParentFinishedAsync(CoreStatusEvent coreEvent)
         {
             await this.UpdateFinishedBatchAsync(coreEvent);
         }
 
+        /// <inheritdoc/>
         public async Task HandleChildrenFinishedAsync(CoreStatusEvent[] coreEvent)
         {
             if (coreEvent == null || coreEvent.Length == 0)

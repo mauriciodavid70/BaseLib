@@ -4,8 +4,12 @@ using System.Xml.Xsl;
 
 namespace System.Xml
 {
-   //fix self closing tag on xml, required for serialization
-   public class SelfClosingTagsFixer
+    /// <summary>
+    /// Applies an XSLT transform that expands self-closing XML tags into explicit open/close pairs
+    /// (e.g. <c>&lt;tag/&gt;</c> → <c>&lt;tag&gt;&lt;/tag&gt;</c>).
+    /// Required before deserializing XML produced by some .NET serializers.
+    /// </summary>
+    public class SelfClosingTagsFixer
     {
         private static readonly XslCompiledTransform transform ;
 
@@ -31,6 +35,7 @@ namespace System.Xml
             }
         }
 
+        /// <summary>Applies the self-closing-tag fix transform to <paramref name="source"/> and returns the result as a new <see cref="Stream"/>.</summary>
         public static Stream Fix(Stream source)
         {
             var target = new MemoryStream();

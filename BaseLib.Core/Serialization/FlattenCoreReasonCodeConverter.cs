@@ -9,17 +9,20 @@ namespace BaseLib.Core.Serialization
     /// </summary>
     public class FlattenCoreReasonCodeConverter : JsonConverter<CoreResponseBase>
     {
+        /// <inheritdoc/>
         public override bool CanConvert(Type typeToConvert)
         {
             var canConvert = typeof(CoreResponseBase).IsAssignableFrom(typeToConvert);
             return canConvert;
         }
 
+        /// <inheritdoc/>
         public override CoreResponseBase? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc/>
         public override void Write(Utf8JsonWriter writer, CoreResponseBase value, JsonSerializerOptions options)
         {
             var type = value.GetType();

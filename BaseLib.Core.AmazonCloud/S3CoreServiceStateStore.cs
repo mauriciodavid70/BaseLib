@@ -5,6 +5,12 @@ using Amazon.S3.Model;
 
 namespace BaseLib.Core.Services.AmazonCloud
 {
+    /// <summary>
+    /// <see cref="ICoreServiceStateStore"/> implementation that persists suspended service state
+    /// as JSON objects in an S3 bucket. Each operation is stored as
+    /// <c>{folderName}/{operationId}.json</c>. Type information is preserved alongside each value
+    /// so the full field graph can be reconstructed on resume.
+    /// </summary>
     public class S3CoreServiceStateStore : ICoreServiceStateStore
     {
         private readonly IAmazonS3 s3;
@@ -17,6 +23,10 @@ namespace BaseLib.Core.Services.AmazonCloud
             WriteIndented = false
         };
 
+        /// <summary>Initializes the state store.</summary>
+        /// <param name="s3">S3 client.</param>
+        /// <param name="bucketName">Name of the S3 bucket used for state storage.</param>
+        /// <param name="folderName">S3 key prefix (folder). Defaults to <c>state</c>.</param>
         public S3CoreServiceStateStore(IAmazonS3 s3, string bucketName, string folderName = "state")
         {
             this.s3 = s3;
@@ -24,6 +34,7 @@ namespace BaseLib.Core.Services.AmazonCloud
             this.folderName = folderName;
         }
 
+        /// <inheritdoc/>
         public async Task<IDictionary<string, object?>> ReadAsync(string operationId)
         {
             // Fast path for invalid inputs
@@ -56,6 +67,7 @@ namespace BaseLib.Core.Services.AmazonCloud
             );
         }
 
+        /// <inheritdoc/>
         public async Task WriteAsync(string operationId, IDictionary<string, object?> state)
         {
             // Create a dictionary with typed values

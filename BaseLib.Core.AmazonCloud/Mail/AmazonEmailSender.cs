@@ -6,14 +6,21 @@ using MimeKit;
 
 namespace BaseLib.Core.AmazonCloud.Mail;
 
+/// <summary>
+/// <see cref="IEmailSender"/> implementation that sends email via Amazon SES v2.
+/// Builds a raw MIME message from the <see cref="MimeMessage"/> and submits it to SES.
+/// </summary>
 public class AmazonEmailSender: IEmailSender
 {
     private readonly IAmazonSimpleEmailServiceV2 emailService;
 
+    /// <summary>Initializes the sender with an SES v2 client.</summary>
+    /// <param name="emailService">The SES v2 service client.</param>
     public AmazonEmailSender(IAmazonSimpleEmailServiceV2 emailService)
     {
         this.emailService = emailService;
     }
+    /// <inheritdoc/>
     public async Task<EmailResponse> SendAsync(MimeMessage message)
     {
         var sendEmailRequest = MapToAmazonRequest(message);

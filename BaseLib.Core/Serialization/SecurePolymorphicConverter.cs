@@ -14,16 +14,20 @@ namespace BaseLib.Core.Serialization
     {
         private readonly IEncryptionKeyProvider keyProvider;
         
+        /// <summary>Initializes the converter with the key provider used to encrypt/decrypt secret properties.</summary>
+        /// <param name="keyProvider">Provider used to generate and unwrap AES-256 data keys.</param>
         public SecurePolymorphicConverter(IEncryptionKeyProvider keyProvider)
         {
             this.keyProvider = keyProvider;
         }
 
+        /// <inheritdoc/>
         public override bool CanConvert(Type typeToConvert)
         {
             return typeof(T).IsAssignableFrom(typeToConvert);
         }
 
+        /// <inheritdoc/>
         public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             //check start of the object
@@ -99,6 +103,7 @@ namespace BaseLib.Core.Serialization
 
         }
 
+        /// <inheritdoc/>
         public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
         {
             var type = value.GetType();

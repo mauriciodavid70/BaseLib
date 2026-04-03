@@ -2,8 +2,13 @@ using System.IO.Compression;
 
 namespace Amazon.Lambda.ApplicationLoadBalancerEvents
 {
+    /// <summary>Extension methods for AWS Lambda response types.</summary>
     public static class AmazonLambdaExtensions
     {
+        /// <summary>
+        /// GZip-compresses the response body, Base64-encodes it, and sets the
+        /// <c>Content-Encoding: gzip</c> header. Returns a new response object.
+        /// </summary>
         public static ApplicationLoadBalancerResponse ToGZip(this ApplicationLoadBalancerResponse response)
         {
             var headers = response.Headers ?? new Dictionary<string, string>();

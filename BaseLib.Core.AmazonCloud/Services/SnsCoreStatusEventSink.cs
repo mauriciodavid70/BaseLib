@@ -18,6 +18,9 @@ namespace BaseLib.Core.Services.AmazonCloud
         private readonly SemaphoreSlim initializationSemaphore = new SemaphoreSlim(1, 1);
         private bool isInitialized = false;
 
+        /// <summary>Initializes the sink.</summary>
+        /// <param name="sns">SNS service client.</param>
+        /// <param name="topicName">Plain topic name (not ARN). Append <c>.fifo</c> for FIFO topics.</param>
         public SnsCoreStatusEventSink(IAmazonSimpleNotificationService sns, string topicName)
         {
             this.sns = sns;
@@ -49,6 +52,7 @@ namespace BaseLib.Core.Services.AmazonCloud
             }
         }
 
+        /// <inheritdoc/>
         public async Task WriteAsync(CoreStatusEvent statusEvent)
         {
             await InitializeAsync();
