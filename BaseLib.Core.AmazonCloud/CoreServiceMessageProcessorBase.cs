@@ -6,15 +6,28 @@ using BaseLib.Core.Services;
 
 namespace BaseLib.Core.AmazonCloud
 {
+    /// <summary>
+    /// AWS Lambda handler that processes an SQS batch of service-dispatch messages.
+    /// Each message body is a JSON payload containing a service type name and either a
+    /// <c>RunAsync</c> request or a <c>ResumeAsync</c> operation ID.
+    /// Failed individual messages are returned as batch item failures so SQS can retry them.
+    /// Derive from this class and register it as your Lambda function handler.
+    /// </summary>
     public class CoreServiceMessageProcessorBase
     {
         private readonly ICoreServiceRunner runner;
 
+        /// <summary>Initializes the processor with the service runner used to dispatch messages.</summary>
+        /// <param name="runner">Runner that resolves and executes services by type name.</param>
         public CoreServiceMessageProcessorBase(ICoreServiceRunner runner)
         {
             this.runner = runner;
         }
 
+        /// <summary>
+        /// Lambda entry point. Processes all records in <paramref name="sqsEvent"/> concurrently
+        /// and returns failed message IDs as batch item failures.
+        /// </summary>
         public virtual async Task<SQSBatchResponse> HandleAsync(SQSEvent sqsEvent, ILambdaContext context)
         {
             var processingTasks = new Dictionary<string, Task>();

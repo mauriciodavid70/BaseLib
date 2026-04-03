@@ -2,8 +2,14 @@
 
 namespace System
 {
+    /// <summary>Extension methods for core .NET types.</summary>
     public static class SystemExtensions
     {
+        /// <summary>
+        /// Returns the <see cref="System.ComponentModel.DescriptionAttribute"/> value for an enum member,
+        /// falling back to the member name if no attribute is present.
+        /// Supports <see cref="FlagsAttribute"/> enums with multiple combined values.
+        /// </summary>
         public static string GetDescription(this Enum @enum)
         {
             var enumString = @enum.ToString();

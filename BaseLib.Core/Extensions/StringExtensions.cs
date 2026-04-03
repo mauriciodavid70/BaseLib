@@ -7,8 +7,13 @@ using System.Text.RegularExpressions;
 
 namespace System
 {
+    /// <summary>General-purpose extension methods for <see cref="string"/>.</summary>
     public static class StringExtensions
     {
+        /// <summary>
+        /// Parses a delimited key=value string into a dictionary.
+        /// Defaults to <c>key=value;key2=value2</c> format.
+        /// </summary>
         public static Dictionary<string, string> ToDictionary(this string text, char valueSeparator = '=', char pairSeparator = ';')
         {
             return text.Split(new char[] { pairSeparator }, StringSplitOptions.RemoveEmptyEntries)
@@ -16,16 +21,19 @@ namespace System
                 .ToDictionary(t => t[0].Trim(), t => t[1].Trim(), StringComparer.InvariantCultureIgnoreCase);
         }
 
+        /// <summary>Converts the string to a <see cref="Stream"/> encoded as UTF-8.</summary>
         public static Stream ToStream(this string s)
         {
             return s.ToStream(Encoding.UTF8);
         }
 
+        /// <summary>Converts the string to a <see cref="Stream"/> using the specified <paramref name="encoding"/>.</summary>
         public static Stream ToStream(this string s, Encoding encoding)
         {
             return new MemoryStream(encoding.GetBytes(s));
         }
 
+        /// <summary>Attempts to decode a Base64 string. Returns <see langword="false"/> if the input is not valid Base64.</summary>
         public static bool TryConvertFromBase64String(string s, out byte[] bytes)
         {
             try
@@ -42,11 +50,13 @@ namespace System
 
         }
 
+        /// <summary>Converts the string to camelCase, normalising special characters first.</summary>
         public static string ToCamelCase(this string text)
         {
             return GetCasedString(text.NormalizeSpecialChars(), false);
         }
 
+        /// <summary>Converts the string to PascalCase, normalising special characters first.</summary>
         public static string ToPascalCase(this string text)
         {
             return GetCasedString(text.NormalizeSpecialChars());
@@ -76,6 +86,10 @@ namespace System
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Replaces accented Latin characters (U+00C0–U+00FF) with their ASCII equivalents
+        /// and converts underscores to spaces. Prefixes a leading underscore if the string starts with a digit.
+        /// </summary>
         public static string NormalizeSpecialChars(this string text)
         {
             var buffer = text.ToCharArray();

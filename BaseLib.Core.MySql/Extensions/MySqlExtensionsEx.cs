@@ -2,6 +2,7 @@
 
 namespace MySql.Data.MySqlClient
 {
+    /// <summary>Extension methods for <see cref="MySqlConnection"/> and <see cref="MySqlException"/>.</summary>
     public static class MySqlExtensionsEx
     {
         private readonly static string[] transientMessages = new string[]{

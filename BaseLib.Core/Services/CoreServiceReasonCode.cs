@@ -2,6 +2,11 @@
 
 namespace BaseLib.Core.Services
 {
+    /// <summary>
+    /// Built-in reason codes set by the framework on <see cref="CoreResponseBase.ReasonCode"/>
+    /// when a service completes. Domain-specific enums can be used alongside these values.
+    /// Declared as <see cref="FlagsAttribute"/> so that <c>Suspended</c> can be OR-ed with other codes.
+    /// </summary>
     [Flags]
     public enum CoreServiceReasonCode
     {

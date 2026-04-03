@@ -8,6 +8,11 @@ using BaseLib.Core.Serialization;
 
 namespace BaseLib.Core.Services.AmazonCloud
 {
+    /// <summary>
+    /// <see cref="ICoreServiceFireOnly"/> implementation that dispatches service invocations
+    /// as messages to an SQS FIFO queue. Supports single and batch fire operations with
+    /// configurable concurrency. The queue URL is resolved lazily on first use.
+    /// </summary>
     public class SqsCoreServiceFireOnly : ICoreServiceFireOnly
     {
         private readonly IAmazonSQS sqs;
@@ -17,8 +22,12 @@ namespace BaseLib.Core.Services.AmazonCloud
         private readonly SemaphoreSlim initLock = new(1, 1);
         private readonly SemaphoreSlim concurrencyLock;
         private readonly int batchSize;
-        
 
+        /// <summary>Initializes the fire-only dispatcher.</summary>
+        /// <param name="sqs">SQS service client.</param>
+        /// <param name="queueName">Name of the SQS FIFO queue (must end with <c>.fifo</c>).</param>
+        /// <param name="maxConcurrency">Maximum number of concurrent batch-send operations. Defaults to 10.</param>
+        /// <param name="batchSize">Number of messages per SQS batch request. Defaults to 10.</param>
         public SqsCoreServiceFireOnly(IAmazonSQS sqs, string queueName, int maxConcurrency = 10, int batchSize = 10)
         {
             this.sqs = sqs;
@@ -27,6 +36,7 @@ namespace BaseLib.Core.Services.AmazonCloud
             this.concurrencyLock = new SemaphoreSlim(maxConcurrency, maxConcurrency);
         }
 
+        /// <inheritdoc/>
         public Task FireAsync<TService>(CoreRequestBase request, string? correlationId = null, bool isLongRunningChild = false)
             where TService : ICoreServiceBase
         {
@@ -36,6 +46,7 @@ namespace BaseLib.Core.Services.AmazonCloud
             return FireAsync(typeName, request, correlationId, isLongRunningChild);
         }
 
+        /// <inheritdoc/>
         public async Task FireAsync(string typeName, CoreRequestBase request, string? correlationId = null, bool isLongRunningChild = false)
         {
             await InitializeAsync();
@@ -59,6 +70,7 @@ namespace BaseLib.Core.Services.AmazonCloud
             }
         }
 
+        /// <inheritdoc/>
         public Task ResumeAsync<TService>(string operationId, string? correlationId = null)
             where TService : ICoreLongRunningService
         {
@@ -69,6 +81,7 @@ namespace BaseLib.Core.Services.AmazonCloud
             return ResumeAsync(typeName, operationId, correlationId);
         }
 
+        /// <inheritdoc/>
         public async Task ResumeAsync(string typeName, string operationId, string? correlationId = null)
         {
             await InitializeAsync();
@@ -127,6 +140,7 @@ namespace BaseLib.Core.Services.AmazonCloud
             return BitConverter.ToString(hashBytes);
         }
 
+        /// <inheritdoc/>
         public Task FireManyAsync<TService>(IEnumerable<CoreRequestBase> requests, string? correlationId = null, bool isLongRunningChild = false)
             where TService : ICoreServiceBase
         {

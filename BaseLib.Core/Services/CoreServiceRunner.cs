@@ -3,16 +3,24 @@ using System.Collections.Concurrent;
 
 namespace BaseLib.Core.Services
 {
+    /// <summary>
+    /// Resolves and executes services by assembly-qualified type name using the DI container.
+    /// Resolved types are cached for performance on subsequent calls.
+    /// Register as a singleton in your DI container.
+    /// </summary>
     public class CoreServiceRunner : ICoreServiceRunner
     {
         private readonly ConcurrentDictionary<string, Type> _typeCache = new();
         private readonly IServiceProvider serviceProvider;
 
+        /// <summary>Initializes the runner with the application service provider.</summary>
+        /// <param name="serviceProvider">The DI container used to resolve service instances.</param>
         public CoreServiceRunner(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
         }
 
+        /// <inheritdoc/>
         public Task<CoreResponseBase> RunAsync(string typeName, CoreRequestBase request, string? correlationId = null, bool IsLongRunningChild = false)
         {
             var service = this.ResolveServiceByTypeName(typeName) as ICoreServiceBase
@@ -20,6 +28,7 @@ namespace BaseLib.Core.Services
             return service.RunAsync(request, correlationId, IsLongRunningChild);
         }
 
+        /// <inheritdoc/>
         public Task<CoreResponseBase> ResumeAsync(string typeName, string operationId)
         {
             var service = this.ResolveServiceByTypeName(typeName) as ICoreLongRunningService

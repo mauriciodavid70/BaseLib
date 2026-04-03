@@ -10,6 +10,8 @@ namespace BaseLib.Core.Services
         private readonly IJournalEntryWriter journalWriter;
         private readonly ICoreStatusEventStore eventStore;
 
+        /// <param name="journalWriter">Writer that persists journal entries to the relational store.</param>
+        /// <param name="eventStore">Store that persists the full event payload for auditing.</param>
         public JournalEventHandler(IJournalEntryWriter journalWriter, ICoreStatusEventStore eventStore)
         {
             this.journalWriter = journalWriter;

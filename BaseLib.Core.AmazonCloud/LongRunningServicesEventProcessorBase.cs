@@ -7,10 +7,19 @@ using BaseLib.Core.Serialization;
 
 namespace BaseLib.Core.Services.AmazonCloud
 {
+    /// <summary>
+    /// AWS Lambda handler that processes SQS batches of SNS-wrapped <see cref="CoreStatusEvent"/> messages
+    /// and drives the long-running service lifecycle via <see cref="ICoreLongRunningServiceManager"/>.
+    /// Events are grouped by correlation ID and processed in order: suspended parents first,
+    /// then finished children, then finished parents.
+    /// Derive from this class and register it as your Lambda function handler.
+    /// </summary>
     public class LongRunningServicesEventProcessorBase
     {
         private readonly ICoreLongRunningServiceManager longRunningServiceManager;
 
+        /// <summary>Initializes the processor with the manager that coordinates long-running service state.</summary>
+        /// <param name="longRunningServiceManager">Manager that handles parent/child lifecycle events.</param>
         public LongRunningServicesEventProcessorBase(ICoreLongRunningServiceManager longRunningServiceManager)
         {
             this.longRunningServiceManager = longRunningServiceManager;
@@ -21,6 +30,11 @@ namespace BaseLib.Core.Services.AmazonCloud
             public string? Message { get; set; }
         }
 
+        /// <summary>
+        /// Lambda entry point. Deserialises SNS notifications, groups events by correlation ID,
+        /// and delegates to <see cref="ICoreLongRunningServiceManager"/>. Returns failed message IDs
+        /// as batch item failures.
+        /// </summary>
         public virtual async Task<SQSBatchResponse> HandleAsync(SQSEvent sqsEvent, ILambdaContext context)
         {
             var groupsOfEvents = ExtractGroupsOfEvents(sqsEvent);

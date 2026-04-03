@@ -2,8 +2,10 @@ using Amazon.S3.Model;
 
 namespace Amazon.S3
 {
+    /// <summary>Extension methods for <see cref="IAmazonS3"/> that simplify common existence and retrieval checks.</summary>
     public static class AmazonS3Extensions
     {
+        /// <summary>Returns <see langword="true"/> if the object identified by <paramref name="key"/> exists in <paramref name="bucketName"/>.</summary>
         public static async Task<bool> ObjectExistsAsync(this IAmazonS3 s3, string bucketName, string key)
         {
             try

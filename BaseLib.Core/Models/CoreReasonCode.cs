@@ -3,6 +3,12 @@ using BaseLib.Core.Services;
 
 namespace BaseLib.Core.Models
 {
+    /// <summary>
+    /// Immutable value object that carries a numeric reason code and its human-readable description.
+    /// Implicitly converts from any <see cref="Enum"/> so domain enums can be assigned directly to
+    /// response <c>ReasonCode</c> properties. Implements <see cref="IConvertible"/> so it can be
+    /// used wherever an <see cref="int"/> is expected (e.g. database parameters).
+    /// </summary>
     public record CoreReasonCode(int Value, string Description) : IConvertible
     {
         public static CoreReasonCode Null { get { return CoreServiceReasonCode.Undefined; } }

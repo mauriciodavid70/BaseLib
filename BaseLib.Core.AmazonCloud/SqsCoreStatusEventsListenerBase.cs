@@ -11,6 +11,7 @@ namespace BaseLib.Core.AmazonCloud
     /// </summary>
     public abstract class SqsCoreStatusEventsListenerBase
     {
+        /// <summary>Lambda entry point. Deserialises SNS-wrapped status events and dispatches each to <see cref="HandleStatusEventAsync"/>.</summary>
         public virtual async Task<SQSBatchResponse> HandleAsync(SQSEvent sqsEvent, ILambdaContext context)
         {
             var events = MapEvents(sqsEvent);
@@ -25,6 +26,7 @@ namespace BaseLib.Core.AmazonCloud
             };
         }
 
+        /// <summary>Processes a pre-parsed dictionary of message-ID-to-event entries concurrently and returns the IDs of failed messages.</summary>
         protected virtual async Task<string[]> HandleAsync(Dictionary<string, CoreStatusEvent> events)
         {
             var processingTasks = new Dictionary<string, Task>();
@@ -51,6 +53,7 @@ namespace BaseLib.Core.AmazonCloud
 
         }
 
+        /// <summary>Deserialises SNS notifications from the SQS batch into a message-ID-to-event dictionary.</summary>
         protected virtual Dictionary<string, CoreStatusEvent> MapEvents(SQSEvent sqsEvent)
         {
             var events = new Dictionary<string, CoreStatusEvent>();
@@ -69,6 +72,7 @@ namespace BaseLib.Core.AmazonCloud
             return events;
         }
 
+        /// <summary>Override to implement custom handling for each deserialised <see cref="CoreStatusEvent"/>.</summary>
         protected abstract Task HandleStatusEventAsync(CoreStatusEvent coreEvent);
 
         private class SnsNotification

@@ -46,11 +46,14 @@ namespace BaseLib.Core.Services.MySql
             WHERE
                 OPERATION_ID = @OPERATION_ID;
         ";
+        /// <summary>Initializes the writer with an open MySQL connection.</summary>
+        /// <param name="connection">An open <see cref="MySqlConnection"/> used for all write operations.</param>
         public JournalEntryWriter(MySqlConnection connection)
         {
             this.connection = connection;
         }
 
+        /// <inheritdoc/>
         public async Task<int> WriteAsync(JournalEntry entry)
         {
             if (entry.Status == CoreServiceStatus.Started)

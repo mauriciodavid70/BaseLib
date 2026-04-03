@@ -14,6 +14,8 @@ namespace BaseLib.Core.Serialization
     {
         private readonly IEncryptionKeyProvider keyProvider;
         
+        /// <summary>Initializes the converter with the key provider used to encrypt/decrypt secret properties.</summary>
+        /// <param name="keyProvider">Provider used to generate and unwrap AES-256 data keys.</param>
         public SecurePolymorphicConverter(IEncryptionKeyProvider keyProvider)
         {
             this.keyProvider = keyProvider;

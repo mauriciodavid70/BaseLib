@@ -4,8 +4,21 @@ using MimeKit.Text;
 
 namespace BaseLib.Core.Mail;
 
+/// <summary>Factory for building <see cref="MimeMessage"/> instances ready to pass to <see cref="IEmailSender"/>.</summary>
 public static class EmailMessageFactory
 {
+    /// <summary>
+    /// Constructs a <see cref="MimeMessage"/> with the supplied recipients, subject, body, and optional
+    /// CC, BCC, and file attachments.
+    /// </summary>
+    /// <param name="fromMail">Sender email address.</param>
+    /// <param name="Tos">Required list of To recipients.</param>
+    /// <param name="subject">Email subject line.</param>
+    /// <param name="content">Email body content.</param>
+    /// <param name="format">Body format — defaults to HTML.</param>
+    /// <param name="bccs">Optional BCC recipients.</param>
+    /// <param name="ccs">Optional CC recipients.</param>
+    /// <param name="attachments">Optional file attachments.</param>
     public static MimeMessage Create(
         string fromMail, IEnumerable<string> Tos, string subject, string content, TextFormat format = TextFormat.Html, IEnumerable<string>? bccs = null,
         IEnumerable<string>? ccs = null, IEnumerable<FileAttachment>? attachments = null)
