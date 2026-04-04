@@ -78,6 +78,11 @@ public class AmazonEmailSender: IEmailSender
                     }
                 }
             };
+            // Map Reply-To addresses so that SES forwards the header to recipients.
+            if (message.ReplyTo != null && message.ReplyTo.Any())
+            {
+                emailRequest.ReplyToAddresses = message.ReplyTo.Select(x => ((MailboxAddress)x).Address).ToList();
+            }
             return emailRequest;
         }
     }
