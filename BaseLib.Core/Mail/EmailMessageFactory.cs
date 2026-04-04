@@ -52,6 +52,7 @@ public static class EmailMessageFactory
             var multipartMessage = new Multipart("mixed");
             foreach (var file in attachments)
             {
+                if (file.Stream is null) continue;
                 var contentType = new System.Net.Mime.ContentType(MediaTypeNames.Application.Octet);
                 try
                 {
