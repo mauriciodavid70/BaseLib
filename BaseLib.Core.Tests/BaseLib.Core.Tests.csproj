@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BaseLib.Core\BaseLib.Core.csproj" />
+    <ProjectReference Include="..\BaseLib.Core.AmazonCloud\BaseLib.Core.AmazonCloud.csproj" />
   </ItemGroup>
 
 </Project>

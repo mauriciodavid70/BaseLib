@@ -9,7 +9,7 @@ public static class EmailMessageFactory
 {
     /// <summary>
     /// Constructs a <see cref="MimeMessage"/> with the supplied recipients, subject, body, and optional
-    /// CC, BCC, and file attachments.
+    /// CC, BCC, Reply-To, and file attachments.
     /// </summary>
     /// <param name="fromMail">Sender email address.</param>
     /// <param name="Tos">Required list of To recipients.</param>
@@ -19,9 +19,10 @@ public static class EmailMessageFactory
     /// <param name="bccs">Optional BCC recipients.</param>
     /// <param name="ccs">Optional CC recipients.</param>
     /// <param name="attachments">Optional file attachments.</param>
+    /// <param name="replyTo">Optional Reply-To addresses. When non-null and non-empty, populates <see cref="MimeMessage.ReplyTo"/>.</param>
     public static MimeMessage Create(
         string fromMail, IEnumerable<string> Tos, string subject, string content, TextFormat format = TextFormat.Html, IEnumerable<string>? bccs = null,
-        IEnumerable<string>? ccs = null, IEnumerable<FileAttachment>? attachments = null)
+        IEnumerable<string>? ccs = null, IEnumerable<FileAttachment>? attachments = null, IEnumerable<string>? replyTo = null)
     {
         var message = new MimeMessage()
         {
@@ -41,6 +42,10 @@ public static class EmailMessageFactory
         if (bccs != null && bccs.Any())
         {
             message.Bcc.AddRange(bccs.Select(x => new MailboxAddress(x, x)));
+        }
+        if (replyTo != null && replyTo.Any())
+        {
+            message.ReplyTo.AddRange(replyTo.Select(x => new MailboxAddress(x, x)));
         }
         if (attachments != null && attachments.Any())
         {
