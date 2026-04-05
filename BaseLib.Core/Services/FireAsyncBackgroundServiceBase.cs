@@ -5,20 +5,20 @@ namespace BaseLib.Core.Services
     /// <summary>
     /// Abstract background service base for Fire-and-Forget async service invocations.
     /// Receives message envelopes from a transport-specific source and delegates execution
-    /// to <see cref="CoreMessageDispatcher"/>, which resolves and runs the target
+    /// to <see cref="FireAsyncMessageDispatcher"/>, which resolves and runs the target
     /// <see cref="ICoreServiceBase"/> implementation via <see cref="ICoreServiceRunner"/>.
     /// Derive from this class to integrate a specific message transport (e.g. NATS, RabbitMQ)
     /// with the BaseLib service dispatch pipeline.
     /// </summary>
-    public abstract class CoreBackgroundServiceBase : BackgroundService
+    public abstract class FireAsyncBackgroundServiceBase : BackgroundService
     {
-        private readonly CoreMessageDispatcher dispatcher;
+        private readonly FireAsyncMessageDispatcher dispatcher;
 
         /// <summary>
         /// Initialises the background service with the dispatcher used to route messages.
         /// </summary>
-        /// <param name="dispatcher">The stateless message dispatcher.</param>
-        protected CoreBackgroundServiceBase(CoreMessageDispatcher dispatcher)
+        /// <param name="dispatcher">The stateless Fire-and-Forget message dispatcher.</param>
+        protected FireAsyncBackgroundServiceBase(FireAsyncMessageDispatcher dispatcher)
         {
             this.dispatcher = dispatcher;
         }

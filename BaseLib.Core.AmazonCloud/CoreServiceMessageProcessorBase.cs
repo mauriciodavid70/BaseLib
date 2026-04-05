@@ -13,11 +13,11 @@ namespace BaseLib.Core.AmazonCloud
     /// </summary>
     public class CoreServiceMessageProcessorBase
     {
-        private readonly CoreMessageDispatcher dispatcher;
+        private readonly FireAsyncMessageDispatcher dispatcher;
 
         /// <summary>Initializes the processor with the dispatcher used to route messages.</summary>
-        /// <param name="dispatcher">Transport-agnostic dispatcher that deserializes and routes payloads.</param>
-        public CoreServiceMessageProcessorBase(CoreMessageDispatcher dispatcher)
+        /// <param name="dispatcher">Fire-and-Forget message dispatcher that deserializes and routes payloads.</param>
+        public CoreServiceMessageProcessorBase(FireAsyncMessageDispatcher dispatcher)
         {
             this.dispatcher = dispatcher;
         }

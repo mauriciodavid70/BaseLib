@@ -6,7 +6,7 @@ using Xunit;
 
 namespace BaseLib.Core.Tests.Services
 {
-    public class CoreMessageDispatcherTests
+    public class FireAsyncMessageDispatcherTests
     {
         // Simple concrete request type for testing
         private class TestRequest : CoreRequestBase { }
@@ -15,9 +15,9 @@ namespace BaseLib.Core.Tests.Services
         private sealed record TestEnvelope(string Body, string MessageId) : ICoreMessageEnvelope;
 
         private readonly Mock<ICoreServiceRunner> runnerMock;
-        private readonly CoreMessageDispatcher dispatcher;
+        private readonly FireAsyncMessageDispatcher dispatcher;
 
-        public CoreMessageDispatcherTests()
+        public FireAsyncMessageDispatcherTests()
         {
             // Initialize CoreSerializer with the standard JSON serializer
             CoreSerializer.Initialize(new CoreJsonSerializer());
@@ -30,7 +30,7 @@ namespace BaseLib.Core.Tests.Services
                 .Setup(r => r.ResumeAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new TestResponse { Succeeded = true });
 
-            dispatcher = new CoreMessageDispatcher(runnerMock.Object);
+            dispatcher = new FireAsyncMessageDispatcher(runnerMock.Object);
         }
 
         private class TestResponse : CoreResponseBase { }
@@ -41,15 +41,15 @@ namespace BaseLib.Core.Tests.Services
             // Arrange
             var request = new TestRequest();
             var typeName = typeof(TestRequest).AssemblyQualifiedName!;
-            var payload = new
+            var message = new FireAsyncMessage
             {
                 TypeName = typeName,
                 Method = "RunAsync",
-                Request = (object)request,
+                Request = request,
                 CorrelationId = "corr-1",
                 IsLongRunningChild = false
             };
-            var body = CoreSerializer.Serialize(payload);
+            var body = CoreSerializer.Serialize(message);
             var envelope = new TestEnvelope(body, "msg-1");
 
             // Act
@@ -65,14 +65,14 @@ namespace BaseLib.Core.Tests.Services
             // Arrange — no Method field
             var request = new TestRequest();
             var typeName = typeof(TestRequest).AssemblyQualifiedName!;
-            var payload = new
+            var message = new FireAsyncMessage
             {
                 TypeName = typeName,
-                Request = (object)request,
-                CorrelationId = (string?)null,
+                Request = request,
+                CorrelationId = null,
                 IsLongRunningChild = false
             };
-            var body = CoreSerializer.Serialize(payload);
+            var body = CoreSerializer.Serialize(message);
             var envelope = new TestEnvelope(body, "msg-2");
 
             // Act
@@ -88,13 +88,13 @@ namespace BaseLib.Core.Tests.Services
             // Arrange
             var typeName = typeof(TestRequest).AssemblyQualifiedName!;
             var operationId = "op-abc";
-            var payload = new
+            var message = new FireAsyncMessage
             {
                 TypeName = typeName,
                 Method = "ResumeAsync",
                 OperationId = operationId
             };
-            var body = CoreSerializer.Serialize(payload);
+            var body = CoreSerializer.Serialize(message);
             var envelope = new TestEnvelope(body, "msg-3");
 
             // Act
@@ -109,12 +109,12 @@ namespace BaseLib.Core.Tests.Services
         {
             // Arrange
             var typeName = typeof(TestRequest).AssemblyQualifiedName!;
-            var payload = new
+            var message = new FireAsyncMessage
             {
                 TypeName = typeName,
                 Method = "DeleteAsync"
             };
-            var body = CoreSerializer.Serialize(payload);
+            var body = CoreSerializer.Serialize(message);
             var envelope = new TestEnvelope(body, "msg-4");
 
             // Act & Assert
