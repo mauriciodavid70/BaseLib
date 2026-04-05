@@ -1,7 +1,5 @@
 using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
-using BaseLib.Core.Models;
-using BaseLib.Core.Serialization;
 using BaseLib.Core.Services;
 
 namespace BaseLib.Core.AmazonCloud
@@ -15,19 +13,25 @@ namespace BaseLib.Core.AmazonCloud
     /// </summary>
     public class CoreServiceMessageProcessorBase
     {
-        private readonly ICoreServiceRunner runner;
+        private readonly FireAsyncMessageDispatcher dispatcher;
 
-        /// <summary>Initializes the processor with the service runner used to dispatch messages.</summary>
-        /// <param name="runner">Runner that resolves and executes services by type name.</param>
-        public CoreServiceMessageProcessorBase(ICoreServiceRunner runner)
+        /// <summary>Initializes the processor with the dispatcher used to route messages.</summary>
+        /// <param name="dispatcher">Fire-and-Forget message dispatcher that deserializes and routes payloads.</param>
+        public CoreServiceMessageProcessorBase(FireAsyncMessageDispatcher dispatcher)
         {
-            this.runner = runner;
+            this.dispatcher = dispatcher;
         }
 
         /// <summary>
         /// Lambda entry point. Processes all records in <paramref name="sqsEvent"/> concurrently
         /// and returns failed message IDs as batch item failures.
         /// </summary>
+        /// <param name="sqsEvent">The SQS batch event received by the Lambda function.</param>
+        /// <param name="context">The Lambda execution context.</param>
+        /// <returns>
+        /// An <see cref="SQSBatchResponse"/> whose <c>BatchItemFailures</c> list contains the IDs
+        /// of any messages that could not be dispatched successfully.
+        /// </returns>
         public virtual async Task<SQSBatchResponse> HandleAsync(SQSEvent sqsEvent, ILambdaContext context)
         {
             var processingTasks = new Dictionary<string, Task>();
@@ -58,40 +62,12 @@ namespace BaseLib.Core.AmazonCloud
             };
         }
 
-        private async Task HandleSingleMessageAsync(SQSEvent.SQSMessage message)
+        private Task HandleSingleMessageAsync(SQSEvent.SQSMessage message)
         {
-            var payload = CoreSerializer.Deserialize<Payload>(message.Body)
-                ?? throw new NullReferenceException("No Service Name on payload");
-
-            var typeName = payload.TypeName
-                ?? throw new NullReferenceException("No Service Name on payload");
-
-            if (string.IsNullOrEmpty(payload.Method) || payload.Method.Equals("RunAsync", StringComparison.OrdinalIgnoreCase))
-            {
-                var request = payload.Request ?? throw new NullReferenceException("No Request on payload");
-                await runner.RunAsync(payload.TypeName, payload.Request, payload.CorrelationId, payload.IsLongRunningChild);
-            }
-            else if (payload.Method.Equals("ResumeAsync", StringComparison.OrdinalIgnoreCase))
-            {
-                if (string.IsNullOrEmpty(payload.OperationId))
-                    throw new NullReferenceException("No OperationId on payload");
-                await runner.ResumeAsync(typeName, payload.OperationId!);
-            }
-            else
-            {
-                throw new NotSupportedException($"Method '{payload.Method}' is not supported.");
-            }
+            var envelope = new SqsMessageEnvelope(message.Body, message.MessageId);
+            return dispatcher.DispatchAsync(envelope);
         }
 
-        private class Payload
-        {
-            public string? TypeName { get; set; }
-            public CoreRequestBase? Request { get; set; }
-            public string? OperationId { get; set; }
-            public string? CorrelationId { get; set; }
-            public bool IsLongRunningChild { get; set; }
-            public string? Method { get; set; }
-        }
-       
-   }
+        private sealed record SqsMessageEnvelope(string Body, string MessageId) : ICoreMessageEnvelope;
+    }
 }

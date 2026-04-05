@@ -5,6 +5,7 @@ using Amazon.SQS;
 using Amazon.SQS.Model;
 using BaseLib.Core.Models;
 using BaseLib.Core.Serialization;
+using BaseLib.Core.Services;
 
 namespace BaseLib.Core.Services.AmazonCloud
 {
@@ -86,7 +87,7 @@ namespace BaseLib.Core.Services.AmazonCloud
         {
             await InitializeAsync();
 
-            var message = new
+            var message = new FireAsyncMessage
             {
                 TypeName = typeName,
                 Method = "ResumeAsync",
@@ -210,7 +211,7 @@ namespace BaseLib.Core.Services.AmazonCloud
         
         private static string BuildMessageBody(string typeName, CoreRequestBase request, string? correlationId, bool isLongRunningChild)
         {
-            var message = new
+            var message = new FireAsyncMessage
             {
                 TypeName = typeName,
                 Method = "RunAsync",
