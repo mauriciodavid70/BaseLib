@@ -11,8 +11,8 @@ namespace BaseLib.Core.Tests.Services
         // Simple concrete request type for testing
         private class TestRequest : CoreRequestBase { }
 
-        // Minimal IMessageEnvelope implementation for tests
-        private sealed record TestEnvelope(string Body, string MessageId) : IMessageEnvelope;
+        // Minimal ICoreMessageEnvelope implementation for tests
+        private sealed record TestEnvelope(string Body, string MessageId) : ICoreMessageEnvelope;
 
         private readonly Mock<ICoreServiceRunner> runnerMock;
         private readonly CoreMessageDispatcher dispatcher;

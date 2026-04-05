@@ -68,6 +68,6 @@ namespace BaseLib.Core.AmazonCloud
             return dispatcher.DispatchAsync(envelope);
         }
 
-        private sealed record SqsMessageEnvelope(string Body, string MessageId) : IMessageEnvelope;
+        private sealed record SqsMessageEnvelope(string Body, string MessageId) : ICoreMessageEnvelope;
     }
 }

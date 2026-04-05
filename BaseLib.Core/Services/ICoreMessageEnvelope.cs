@@ -5,7 +5,7 @@ namespace BaseLib.Core.Services
     /// Provides the raw JSON payload body and a unique message identifier
     /// without exposing any transport-specific metadata to the dispatch layer.
     /// </summary>
-    public interface IMessageEnvelope
+    public interface ICoreMessageEnvelope
     {
         /// <summary>
         /// The raw JSON payload string to be deserialized and dispatched.

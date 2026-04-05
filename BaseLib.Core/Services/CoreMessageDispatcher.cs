@@ -4,7 +4,7 @@ using BaseLib.Core.Serialization;
 namespace BaseLib.Core.Services
 {
     /// <summary>
-    /// Transport-agnostic dispatcher that deserializes an <see cref="IMessageEnvelope"/> body
+    /// Transport-agnostic dispatcher that deserializes an <see cref="ICoreMessageEnvelope"/> body
     /// and routes the call to <see cref="ICoreServiceRunner.RunAsync"/> or
     /// <see cref="ICoreServiceRunner.ResumeAsync"/> based on the <c>Method</c> field in the payload.
     /// This class is stateless and safe to register as a singleton.
@@ -30,7 +30,7 @@ namespace BaseLib.Core.Services
         /// <exception cref="NotSupportedException">
         /// Thrown when the <c>Method</c> field in the payload is not <c>RunAsync</c> or <c>ResumeAsync</c>.
         /// </exception>
-        public async Task DispatchAsync(IMessageEnvelope envelope)
+        public async Task DispatchAsync(ICoreMessageEnvelope envelope)
         {
             var payload = CoreSerializer.Deserialize<Payload>(envelope.Body)
                 ?? throw new NullReferenceException("No Service Name on payload");

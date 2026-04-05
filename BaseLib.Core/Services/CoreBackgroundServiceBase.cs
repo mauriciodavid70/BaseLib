@@ -3,13 +3,14 @@ using Microsoft.Extensions.Hosting;
 namespace BaseLib.Core.Services
 {
     /// <summary>
-    /// Abstract base class for hosted consumers that pull messages from a transport,
-    /// dispatch them via <see cref="CoreMessageDispatcher"/>, and acknowledge or
-    /// negatively acknowledge based on the dispatch outcome.
-    /// Subclasses implement the transport-specific <see cref="ReceiveAsync"/>,
-    /// <see cref="AcknowledgeAsync"/>, and <see cref="NackAsync"/> methods.
+    /// Abstract background service base for Fire-and-Forget async service invocations.
+    /// Receives message envelopes from a transport-specific source and delegates execution
+    /// to <see cref="CoreMessageDispatcher"/>, which resolves and runs the target
+    /// <see cref="ICoreServiceBase"/> implementation via <see cref="ICoreServiceRunner"/>.
+    /// Derive from this class to integrate a specific message transport (e.g. NATS, RabbitMQ)
+    /// with the BaseLib service dispatch pipeline.
     /// </summary>
-    public abstract class CoreBackgroundService : BackgroundService
+    public abstract class CoreBackgroundServiceBase : BackgroundService
     {
         private readonly CoreMessageDispatcher dispatcher;
 
@@ -17,7 +18,7 @@ namespace BaseLib.Core.Services
         /// Initialises the background service with the dispatcher used to route messages.
         /// </summary>
         /// <param name="dispatcher">The stateless message dispatcher.</param>
-        protected CoreBackgroundService(CoreMessageDispatcher dispatcher)
+        protected CoreBackgroundServiceBase(CoreMessageDispatcher dispatcher)
         {
             this.dispatcher = dispatcher;
         }
@@ -31,7 +32,7 @@ namespace BaseLib.Core.Services
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                IMessageEnvelope? envelope = null;
+                ICoreMessageEnvelope? envelope = null;
                 try
                 {
                     envelope = await ReceiveAsync(stoppingToken);
@@ -59,7 +60,7 @@ namespace BaseLib.Core.Services
         /// </summary>
         /// <param name="cancellationToken">Token that signals cancellation.</param>
         /// <returns>The next message envelope, or <see langword="null"/> if none is available.</returns>
-        protected abstract Task<IMessageEnvelope?> ReceiveAsync(CancellationToken cancellationToken);
+        protected abstract Task<ICoreMessageEnvelope?> ReceiveAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// Acknowledges that the given <paramref name="envelope"/> was successfully processed,
@@ -67,7 +68,7 @@ namespace BaseLib.Core.Services
         /// </summary>
         /// <param name="envelope">The envelope that was successfully dispatched.</param>
         /// <param name="cancellationToken">Token that signals cancellation.</param>
-        protected abstract Task AcknowledgeAsync(IMessageEnvelope envelope, CancellationToken cancellationToken);
+        protected abstract Task AcknowledgeAsync(ICoreMessageEnvelope envelope, CancellationToken cancellationToken);
 
         /// <summary>
         /// Negatively acknowledges the given <paramref name="envelope"/>, signalling to the
@@ -75,6 +76,6 @@ namespace BaseLib.Core.Services
         /// </summary>
         /// <param name="envelope">The envelope whose dispatch failed.</param>
         /// <param name="cancellationToken">Token that signals cancellation.</param>
-        protected abstract Task NackAsync(IMessageEnvelope envelope, CancellationToken cancellationToken);
+        protected abstract Task NackAsync(ICoreMessageEnvelope envelope, CancellationToken cancellationToken);
     }
 }
