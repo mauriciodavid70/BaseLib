@@ -4,8 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>BaseLib.Core.MySql</PackageId>
-    <Version>3.1.1</Version>
-    <Authors>Mauricio David Obando</Authors>
+<Authors>Mauricio David Obando</Authors>
     <Company>Mauricio David Obando</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/mauriciodavid70/BaseLib</RepositoryUrl>

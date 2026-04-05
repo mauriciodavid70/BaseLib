@@ -74,6 +74,53 @@ return Fail(MyReasonCode.NotFound, "extra context");
 - Commit messages use Conventional Commits style: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
 - All packages share the same minor version (`3.1.x`) for compatibility — bump together.
 
+### Claude Code Workflow
+
+**Triage first:**
+- Bug fix / typo / test for existing behavior → implement directly, no proposal needed.
+- New capability, breaking change, or architecture shift → follow the three OpenSpec stages below.
+
+**Stage 1 — Proposal (background agent, worktree-isolated):**
+1. Main session runs the context checklist: `openspec list`, `openspec list --specs`, review `project.md`.
+2. Main session launches a background agent with `isolation: "worktree"`.
+3. Agent scaffolds the change and validates: `openspec validate <id> --strict`.
+4. **Validation must pass before returning for review** — do not surface the proposal if `--strict` reports errors.
+5. Agent returns the proposal to the main session for explicit approval.
+6. **After approval**, agent commits only `openspec/changes/<id>/` to the worktree branch — no other files. Untracked files bleed across worktrees, so the proposal must be committed before the implementation agent starts.
+
+**Stage 2 — Implementation (background agent, same worktree branch):**
+1. Main session launches a background agent targeting the same worktree branch.
+2. Agent reads `proposal.md` → `design.md` (if present) → `tasks.md`, then implements sequentially.
+3. Agent checks off every item in `tasks.md` after completion.
+4. Agent bumps the version in `Directory.Build.props` (single source of truth for all packages):
+   - Breaking change → minor bump, reset patch: `3.1.x → 3.2.0`
+   - Feature or fix → patch bump: `3.1.x → 3.1.x+1`
+5. Agent finalises: `openspec archive <id> --yes` → `git rebase master` (if master has advanced) → `git push` → `gh pr create`.
+6. Agent returns the PR URL to the main session.
+
+**Stage 3 — Review:**
+- Main session receives the PR URL; human reviews and merges via GitHub.
+- Never merge locally.
+
+**Stage 4 — Release (after PR is merged):**
+1. `git pull` master to get merged changes.
+2. `dotnet build BaseLib.sln -c Release` — verify clean build before packing.
+3. `dotnet pack BaseLib.sln -o ../nugetpackages -c Release`
+4. Extract version and push only that version's packages:
+   ```bash
+   VERSION=$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' Directory.Build.props)
+   dotnet nuget push "../nugetpackages/BaseLib.*.$VERSION.nupkg" --source nuget.org \
+     --api-key $(security find-generic-password -a nuget -s NUGET_PERSONAL_APIKEY -w) \
+     --skip-duplicate
+   ```
+
+**Hard constraints:**
+- No work is ever committed directly to master — all work happens in worktree branches.
+- Proposal must be committed inside the worktree before launching the implementation agent (worktree isolation only applies to tracked files).
+- Archive + PR steps happen inside the implementation agent, not the main session.
+- Always rebase onto master before pushing if master has advanced since the worktree was created.
+- `Directory.Build.props` is the single version source — never set `<Version>` in individual `.csproj` files.
+
 ## Domain Context
 
 - This is a **library** — consumers depend on its public surface. Any removal or signature change to a public type/member is a **breaking change**.
