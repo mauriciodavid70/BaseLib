@@ -1,0 +1,17 @@
+services:
+  nats:
+    image: nats:latest
+    command: ["-js"]
+    ports:
+      - "4222:4222"
+
+  basicerp:
+    build:
+      context: ../..
+      dockerfile: samples/BasicErp/BasicErp.Host/Dockerfile
+    environment:
+      - Nats__Url=nats://nats:4222
+    depends_on:
+      - nats
+    ports:
+      - "8080:8080"

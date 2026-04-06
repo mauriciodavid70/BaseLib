@@ -1,0 +1,11 @@
+<Solution>
+  <Project Path="../../BaseLib.Core.Local/BaseLib.Core.Local.csproj" />
+  <Project Path="../../BaseLib.Core.Nats/BaseLib.Core.Nats.csproj" />
+  <Project Path="../../BaseLib.Core.Sqlite/BaseLib.Core.Sqlite.csproj" />
+  <Project Path="../../BaseLib.Core/BaseLib.Core.csproj" />
+  <Project Path="BasicErp.Host/BasicErp.Host.csproj" />
+  <Project Path="BasicErp.Inventory/BasicErp.Inventory.csproj" />
+  <Project Path="BasicErp.Invoicing/BasicErp.Invoicing.csproj" />
+  <Project Path="BasicErp.Orders/BasicErp.Orders.csproj" />
+  <Project Path="BasicErp.Shipping/BasicErp.Shipping.csproj" />
+</Solution>

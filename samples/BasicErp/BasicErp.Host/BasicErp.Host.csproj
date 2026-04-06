@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BasicErp.Orders\BasicErp.Orders.csproj" />
+    <ProjectReference Include="..\BasicErp.Inventory\BasicErp.Inventory.csproj" />
+    <ProjectReference Include="..\BasicErp.Invoicing\BasicErp.Invoicing.csproj" />
+    <ProjectReference Include="..\BasicErp.Shipping\BasicErp.Shipping.csproj" />
+    <ProjectReference Include="..\..\..\BaseLib.Core.Nats\BaseLib.Core.Nats.csproj" />
+    <ProjectReference Include="..\..\..\BaseLib.Core.Local\BaseLib.Core.Local.csproj" />
+    <ProjectReference Include="..\..\..\BaseLib.Core.Sqlite\BaseLib.Core.Sqlite.csproj" />
+  </ItemGroup>
+</Project>
