@@ -1,13 +1,13 @@
 using BaseLib.Core.Serialization;
 using BaseLib.Core.Services;
 
-namespace BaseLib.Core.Containers
+namespace BaseLib.Core.Local
 {
     /// <summary>
     /// <see cref="ICoreServiceStateStore"/> implementation that persists long-running service
     /// state as JSON files on the local file system.  The <c>operationId</c> is used as the
     /// file name (with a <c>.json</c> extension) under a configurable root directory.
-    /// Intended for single-instance container deployments; not safe for multi-replica use.
+    /// Intended for single-instance local/dev use; not safe for multi-replica deployments.
     /// </summary>
     public class FileSystemCoreServiceStateStore : ICoreServiceStateStore
     {

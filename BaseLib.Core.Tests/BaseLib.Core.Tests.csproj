@@ -18,9 +18,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.*" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BaseLib.Core\BaseLib.Core.csproj" />
     <ProjectReference Include="..\BaseLib.Core.AmazonCloud\BaseLib.Core.AmazonCloud.csproj" />
     <ProjectReference Include="..\BaseLib.Core.Containers\BaseLib.Core.Containers.csproj" />
+    <ProjectReference Include="..\BaseLib.Core.Local\BaseLib.Core.Local.csproj" />
+    <ProjectReference Include="..\BaseLib.Core.Sqlite\BaseLib.Core.Sqlite.csproj" />
     <ProjectReference Include="..\BaseLib.Core.RabbitMQ\BaseLib.Core.RabbitMQ.csproj" />
     <ProjectReference Include="..\BaseLib.Core.Nats\BaseLib.Core.Nats.csproj" />
   </ItemGroup>
