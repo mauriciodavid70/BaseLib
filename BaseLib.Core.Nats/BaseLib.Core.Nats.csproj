@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>BaseLib.Core.Nats</PackageId>
+    <Authors>Mauricio David Obando</Authors>
+    <Company>Mauricio David Obando</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/mauriciodavid70/BaseLib</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="NATS.Net" Version="2.*" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.*" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseNuGetPackages)' != 'true'">
+    <ProjectReference Include="..\BaseLib.Core\BaseLib.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseNuGetPackages)' == 'true'">
+    <PackageReference Include="BaseLib.Core" Version="3.2.*-*" />
+  </ItemGroup>
+</Project>
