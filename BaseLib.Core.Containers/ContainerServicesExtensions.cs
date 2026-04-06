@@ -12,11 +12,6 @@ namespace BaseLib.Core.Containers
     public class ContainerServicesOptions
     {
         /// <summary>
-        /// Root directory under which <see cref="FileSystemCoreServiceStateStore"/> writes state files.
-        /// </summary>
-        public string StateStoreRootDirectory { get; set; } = string.Empty;
-
-        /// <summary>
         /// Hostname or IP address of the SMTP server used by <see cref="SmtpEmailSender"/>.
         /// </summary>
         public string SmtpHost { get; set; } = string.Empty;
@@ -44,10 +39,9 @@ namespace BaseLib.Core.Containers
     public static class ContainerServicesExtensions
     {
         /// <summary>
-        /// Registers <see cref="FileSystemCoreServiceStateStore"/>, <see cref="EnvironmentSecretsVault"/>,
-        /// and <see cref="SmtpEmailSender"/> as the active implementations of
-        /// <see cref="ICoreServiceStateStore"/>, <see cref="ICoreSecretsVault"/>, and
-        /// <see cref="IEmailSender"/> respectively.
+        /// Registers <see cref="EnvironmentSecretsVault"/> and <see cref="SmtpEmailSender"/> as the
+        /// active implementations of <see cref="ICoreSecretsVault"/> and <see cref="IEmailSender"/>
+        /// respectively.
         /// </summary>
         /// <param name="services">The service collection to add registrations to.</param>
         /// <param name="configure">Action to populate <see cref="ContainerServicesOptions"/>.</param>
@@ -58,9 +52,6 @@ namespace BaseLib.Core.Containers
         {
             var options = new ContainerServicesOptions();
             configure(options);
-
-            services.AddSingleton<ICoreServiceStateStore>(
-                _ => new FileSystemCoreServiceStateStore(options.StateStoreRootDirectory));
 
             services.AddSingleton<ICoreSecretsVault, EnvironmentSecretsVault>();
 

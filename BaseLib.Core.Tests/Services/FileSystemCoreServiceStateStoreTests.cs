@@ -1,4 +1,4 @@
-using BaseLib.Core.Containers;
+using BaseLib.Core.Local;
 using BaseLib.Core.Serialization;
 using Xunit;
 
@@ -66,6 +66,16 @@ namespace BaseLib.Core.Tests.Services
 
             // Assert
             Assert.True(File.Exists(Path.Combine(tempDir, $"{operationId}.json")));
+        }
+
+        [Fact]
+        public void DefaultOptions_UsesTempDirectory()
+        {
+            // Arrange
+            var options = new LocalServicesOptions();
+
+            // Assert — default root is OS temp path
+            Assert.Equal(Path.GetTempPath(), options.StateStoreRootDirectory);
         }
     }
 }
